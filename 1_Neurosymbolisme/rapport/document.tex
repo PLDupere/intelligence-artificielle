@@ -87,7 +87,7 @@
 
         \begin{flushleft}
             \textbf{Réalisé par :} Pier-Luc Dupéré \\[0.4cm]
-            \textbf{Encadré par :} Mehdi Adda, PhD 
+            \textbf{Professeur :} Mehdi Adda, PhD 
         \end{flushleft}
 
         \vfill
@@ -105,157 +105,263 @@
 \clearpage
 \pagenumbering{arabic}
 
-\chapter{Introduction}
 
-Présentez ici le contexte général du sujet, la problématique et l'intérêt du travail.
+% -------------------------
+% Chapitre 1
+% -------------------------
+\chapter{Unifying Large Language Models and Knowledge Graphs: A Roadmap[1]}
 
-\section{Contexte}
-Décrivez le contexte universitaire, professionnel ou scientifique du rapport.
+\section{Mise en contexte}
+Malgré leur succès dans de nombreux domaines, les grands modèles de langage (LLM) 
+sont parfois critiqués pour leur manque de fiabilité. Même s'ils apprennent des 
+faits à partir des données utilisées pour leur entraînement. Ils peuvent les oublier, 
+les déformer ou inventer des informations. Ce phénomène est appelé « hallucination ».
 
-\section{Problématique}
-Présentez la question principale à laquelle votre travail tente de répondre.
-
-\section{Objectifs}
-Les objectifs de ce rapport sont les suivants :
-
+les grands modèles de langage (LLM) ont montré de grandes capacités dans de nombreuses 
+tâches de traitement automatique du langage naturel la plupart d'entre eux utilisent 
+l'architecture Transformer, composée de :
 \begin{itemize}
-    \item présenter le contexte du projet ;
-    \item expliquer la méthodologie utilisée ;
-    \item analyser les résultats obtenus ;
-    \item proposer des perspectives d'amélioration.
+    \item Langage à encodeur seul
+    \item Langage à encodeur-décodeur
+    \item Langage à décodeur seul
 \end{itemize}
 
-\section{Organisation du rapport}
-Ce rapport est organisé en plusieurs chapitres. Le premier chapitre présente le contexte, le deuxième décrit la méthodologie et le troisième analyse les résultats.
+Afin de remédier à ce problème, les chercheurs ont proposé d'intégrer des graphes de 
+connaissances (KG) dans les LLM. Ces graphes permettent d'organisent les informations sous forme de triplets.
+Ce triplet est composé de l'entité de tête, la relation et l'entité de queue.
+(head entity, relation, tail entity)
 
-\chapter{État de l'art}
+Les graphes de connaissances existants peuvent être classés en quatre groupes selon le type d'informations 
+qu'ils contiennent :
+\begin{itemize}
+    \item Les KG encyclopédiques
+    \item Les KG de sens commun
+    \item Les KG spécifiques à un domaine
+    \item Les KG multimodaux
+\end{itemize}
 
-\section{Présentation générale}
-Présentez les concepts et les travaux existants liés à votre sujet.
+Les graphes de connaissances permettent un raisonnement symbolique et produisent des résultats 
+plus faciles à comprendre. L'association des LLM et des graphes de connaissances intéresse de 
+plus en plus les chercheurs, car ces deux technologies peuvent se compléter et s'améliorer 
+mutuellement.
 
-\section{Travaux connexes}
-Discutez des recherches, méthodes ou solutions déjà proposées.
+Dans cet article, trois méthodes sont proposées pour intégrer les graphes de connaissances 
+dans les LLM : l'enrichissement des LLM par les graphes de connaissances, l'amélioration des 
+graphes de connaissances grâce aux LLM.
 
-\section{Synthèse}
-Comparez les différentes approches et expliquez le choix retenu.
+% ----------------------------------------------
+\section{Les LLM enrichis par des KG}
+Les grands modèles de langage (LLM) sont généralement entraînés de manière non supervisée sur 
+de vastes corpus. Malgré leurs bonnes performance. Ils peuvent manquer de connaissances 
+pratiques et actualisées sur le monde réel.
 
-\chapter{Méthodologie}
+Les graphes de connaissances (KG) peuvent être intégrés aux LLM de trois principales façons :
+\begin{itemize}
+    \item En les intégrant à l'objectif d'entraînement
+    \item En ajoutant les connaissances des KG aux entrées du modèle
+    \item En utilisant les KG lors de l'instruction-tuning
+\end{itemize}
 
-\section{Matériel et outils}
-Présentez les logiciels, outils, équipements ou données utilisés.
+Il existe une problématique leur mise à jour nécessite d'un nouvel entraînement du modèle. 
+Ces approches risquent donc de mal gérer des connaissances nouvelles ou absentes des données 
+d'entraînement.
 
-\begin{table}[H]
-    \centering
-    \caption{Outils utilisés}
-    \begin{tabular}{lll}
-        \toprule
-        Outil & Version & Utilisation \\
-        \midrule
-        LaTeX & 2025 & Rédaction du rapport \\
-        Python & 3.x & Analyse des données \\
-        Git & 2.x & Gestion du projet \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+Les LLM sont souvent critiqués pour leur  difficulté à comprendre leur fonctionnement interne 
+et leurs décisions. Les KG représentent les connaissances de manière structurée et explicite, 
+ce qui peut rendre les raisonnements du modèle plus faciles à expliquer.
 
-\section{Méthode de travail}
-Expliquez les différentes étapes suivies pour réaliser le travail.
+% ----------------------------------------------
+\section{Les KG augmentés par des LLM}
+(Embeddings) de KG augmentés par LLM : 
+L'objectif est de convertir les entités et relations en vecteurs mathématiques. Contrairement aux méthodes classiques limitées à la structure du graphe.
 
-\section{Architecture ou processus}
-Insérez ici un schéma, une architecture ou un diagramme.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{img/schema.png}
-    \caption{Schéma général du projet}
-    \label{fig:schema}
-\end{figure}
+Complétion de KG augmentée par LLM : 
+Cette méthode vise à déduire les faits manquants dans un graphe. 
+On utilise des pipelines de LLM pour prédire les descriptions d'entités et identifier l'élément manquant dans un triplet.
 
-La figure~\ref{fig:schema} présente l'organisation générale du projet.
+Construction de KG augmentée par LLM : 
+Les LLM font la création de graphes structurés en automatisant la découverte d'entités, la résolution de coréférences et l'extraction de relations.
 
-\chapter{Réalisation}
+Génération de texte à partir de KG : 
+Ce processus transforme des données structurées en texte naturel pour pallier le manque de 
+données d'entraînement. On exploite les connaissances intrinsèques des LLM.
 
-\section{Développement}
-Décrivez les étapes de réalisation du projet.
+Questions-Réponses sur KG : 
+Le but est de répondre à des questions naturelles via des faits structurés. 
+Les LLM comblent le fossé entre le langage souple et le graphe rigide en jouant deux rôles.
 
-\section{Implémentation}
-Vous pouvez insérer du code ou des équations.
-
-Exemple d'équation :
-
-\begin{equation}
-    E = mc^2
-    \label{eq:energie}
-\end{equation}
-
-\section{Difficultés rencontrées}
-Présentez les problèmes rencontrés ainsi que les solutions adoptées.
-
-\chapter{Résultats et discussion}
-
-\section{Résultats obtenus}
-Présentez et analysez vos résultats.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{img/resultats.png}
-    \caption{Résultats obtenus}
-    \label{fig:resultats}
-\end{figure}
-
-\section{Interprétation}
-Expliquez la signification des résultats et comparez-les avec les objectifs initiaux.
-
-\section{Limites du travail}
-Présentez les limites de votre étude ou de votre projet.
-
-\chapter{Conclusion et perspectives}
-
-Ce rapport a permis de présenter le contexte, la méthodologie et les résultats du travail réalisé.
-
-Les principaux résultats montrent que les objectifs fixés ont été atteints. Cependant, certaines améliorations restent possibles, notamment :
+\section{Les KG augmentés par des LLM}
 
 \begin{itemize}
-    \item améliorer la précision des résultats ;
-    \item tester la solution sur un ensemble de données plus important ;
-    \item ajouter de nouvelles fonctionnalités ;
-    \item optimiser les performances.
+    \item \textbf{Embeddings de KG augmentés par LLM :} L'objectif est de convertir les entités et relations en vecteurs mathématiques.
+    \item \textbf{Complétion de KG augmentée par LLM :} On utilise des pipelines de LLM pour prédire les descriptions d'entités et identifier l'élément manquant dans un triplet.
+    \item \textbf{Construction de KG augmentée par LLM :} Les LLM automatisent la création de graphes via la découverte d'entités, la résolution de coréférences et l'extraction de relations.
+    \item \textbf{Génération de texte à partir de KG :} Ce processus transforme des données structurées en texte naturel en exploitant les connaissances intrinsèques des LLM.
+    \item \textbf{Questions-Réponses sur KG :} Les LLM permettent de répondre à des questions naturelles entre le langage utilisateur et les faits structurés du graphe.
 \end{itemize}
+
+
+% ----------------------------------------------
+\section{La synergie entre LLM et KG}
+Cette section présente la synergie entre les grands modèles de langage et les graphes de 
+connaissances. Les LLM permettent de comprendre le langage naturel, tandis que les graphes 
+fournissent des connaissances structurées et factuelles. Leur combinaison peut donc améliorer 
+la représentation des connaissances et les capacités de raisonnement.
+
+La synergie repose sur deux aspects principaux 
+\begin{itemize}
+    \item La représentation conjointe des connaissances 
+    \item Le raisonnement combiné
+\end{itemize}
+
+\textbf{Représentation conjointe des connaissances} :
+Les textes contiennent des informations souvent implicites et désorganisées, 
+alors que les graphes de connaissances présentent des informations explicites 
+et structurées. Plusieurs modèles combinent donc les deux sources grâce à des 
+encodeurs et à des modules de fusion. Certains filtrent les informations inutiles 
+du graphe, pendant que d'autres apprennent simultanément les représentations textuelles 
+et les relations entre les entités. Cette approche permet de mieux exploiter les 
+connaissances issues des textes et des graphes dans différentes tâches.
+
+\textbf{Raisonnement combiné} :
+Cette approche cherche à utiliser à la fois les informations textuelles et 
+les relations présentes dans les graphes pour produire des réponses. 
+Certains modèles utilisent deux encodeurs distincts qui échangent des 
+informations, tandis que d'autres établissent une interaction plus fine 
+entre les mots du texte et les entités du graphe. Des méthodes permettent 
+également de réduire dynamiquement le graphe afin de se concentrer sur les 
+informations les plus pertinentes.
+
+Enfin, les deux approches présentent des avantages et des limites. La fusion des LLM 
+et des graphes permet un entraînement conjoint et de bonnes performances. Cependant, 
+elle augmente le nombre de paramètres et le coût de calcul. L'utilisation des LLM comme 
+agents est plus flexible et ne nécessite pas toujours un entraînement supplémentaire. 
+La définition de leurs actions et de leurs stratégies de recherche reste complexe. 
+La combinaison des LLM et des graphes de connaissances demeure donc un domaine de 
+recherche encore en développement.
+
+% ----------------------------------------------
+\section{Critiques et limites}
+C'est une excellente synthèse critique. L'article contient plus de 250 citations qui sont pour 
+la plus par ressente. De plus, il est intéressant de constater que deux approches sont possibles 
+pour combiner les LLM et les graphes de connaissances (KG), afin d'obtenir des résultats plus 
+précis et plus fiables. Ces deux approches sont complémentaires et peuvent permettre de compenser 
+leurs limites respectives.
+
+Cet article ouvre également plusieurs perspectives de recherche. Les auteurs présentent les 
+orientations futures ainsi que plusieurs étapes importantes dans le développement de la 
+recherche visant à unifier les graphes de connaissances et les LLM.
+\begin{itemize}
+    \item Détection des hallucinations
+    \item Mise à jour des connaissances
+    \item Injection de connaissances dans les LLM propriétaires
+    \item Prise en compte de plusieurs modalités
+    \item Compréhension de la structure des graphes
+    \item Raisonnement bidirectionnel
+\end{itemize}
+
+
+% -------------------------
+% Chapitre 2
+% -------------------------
+\chapter{From Local to Global: A GraphRAG Approach to Query-Focused Summarization [2]}
+
+\section{Mise en contexte}
+Le RAG est une méthode qui permet à un modèle de langage de rechercher des informations dans des sources 
+externes avant de générer une réponse. Cette approche est utile lorsque les données sont trop nombreuses 
+pour être intégrées entièrement dans la fenêtre de contexte du modèle.
+
+Le RAG vectoriel récupère les documents dont le contenu est sémantiquement proche de la question grâce 
+aux représentations vectorielles. Il est efficace pour retrouver des informations précises. Il est limité 
+lorsqu'il faut comprendre les tendances et les relations générales présentes dans l'ensemble d'un corpus.
+
+La GraphRAG améliore cette approche en construisant un graphe à partir des données. Elle regroupe les 
+éléments liés en communautés thématiques.Par la suite, il génère des résumés à plusieurs niveaux qui vont faire 
+des informations locales à une compréhension globale du corpus. Elle est donc particulièrement adaptée 
+aux questions nécessitant une analyse d'ensemble. Ces graphes améliorent la recherche et fournissent 
+une base solide aux réponses générées.
+
+\section{Méthodologie de l'approche}
+
+\textbf{Documents sources => Segments de texte}
+Les documents du corpus sont d'abord découpés en plusieurs segments de texte. Le LLM analyse ensuite 
+chaque segment afin d'en extraire les informations. La détermination de la taille des segments est essentielle.
+Les coûts de traitement sont réduits avec des segments plus longs. Cependant, ils peuvent également diminuer 
+la capacité du modèle à retrouver les informations dans segment.
+
+\textbf{Segments de texte => Entités et relations}
+Durant cette étape, le LLM est invité à extraire des instances d'entités importantes ainsi que les relations
+entre ces entités à partir d'un segment de texte donné. De plus, le LLM génère de brèves descriptions
+pour ces entités et relations.
+
+\textbf{Entités et relations => Graphe des connaissances}
+L'extraction des entités, des relations et des affirmations peut générer plusieurs occurrences d'un même 
+élément dans différents documents. Lors de la construction du graphe de connaissances, ces occurrences 
+sont regroupées pour créer des nœuds et des arêtes uniques. Les descriptions sont ensuite combinées et 
+résumées. Fait important, le nombre d'occurrences d'une même relation détermine le poids de l'arête. 
+Les affirmations sont regroupées de la même manière.
+
+\textbf{Graphe de connaissances => Communautés du graphe}
+Divers algorithmes de détection de communautés peuvent être utilisés pour partitionner le graphe en 
+groupes de nœuds fortement connectés de manière hiérarchique. Cette méthode consiste à détecter récursivement 
+des sous-communautés au sein de chaque communauté identifiée.
+
+
+\textbf{Communautés du graphe => Résumés de communauté}
+Cette étape consiste à générer un résumé pour chaque communauté de la hiérarchie. Les résumés permettent de 
+mieux comprendre la structure globale et le contenu du corpus. Ils peuvent également être utilisés pour 
+explorer les données sans requête précise. C'est en GraphRAG que ces résumés de communauté qui sont composés
+d'éléments (noeuds, arêtes et affirmations associées)
+
+\textbf{Résumés par communauté → Réponses communautaires → Réponse globale}
+Les résumés des communautés sont d'abord répartis en plusieurs groupes. Le LLM produit ensuite une réponse 
+pour chaque groupe et lui attribue un score d'utilité. Les réponses les plus pertinentes sont conservées. 
+Puis, elles sont combinées et optimisées pour générer une réponse globale à la question de l'utilisateur.
+
+
+
+\section{Analyses et discussions}
+Les résultats montrent que les méthodes globales, en particulier GraphRAG, obtiennent de meilleurs résultats 
+que le RAG vectoriel. GraphRAG est donc plus adapté aux questions nécessitant une compréhension globale d'un corpus.
+
+GraphRAG présente aussi un avantage en matière de consommation de ressources. Les résumés des communautés 
+racines nécessitent beaucoup moins de jetons que le traitement direct de tous les textes. Ce qui surprend 
+c'est que les GraphRAG peut réduire considérablement la quantité de données envoyées au modèle tout en 
+conservant de bonnes performances.
+
+Les travaux futurs pourraient améliorer GraphRAG en combinant la recherche vectorielle avec la génération 
+dynamique de résumés communautaires. Le système pourrait aussi fonctionner de manière hiérarchique. C'est à dire, 
+qui'il pourrait passer d'une vue globale à une analyse plus détaillée des communautés.
+
+Personnellement, je considère comme des points forts de cette article la présence d'un lien vers le dépôt Git, 
+du pseudocode décrivant l'algorithme et des prompts détaillés présentés en annexe. Cela permet de reproduire les 
+expériences et de mieux comprendre le fonctionnement de l'approche GraphRAG.
+
+% ----------------------------------------------
+\section*{Notes}
+La rédaction et la mise en forme de ce document ont été réalisées avec \LaTeX{} et 
+Visual Studio Code. Les outils de correction orthographique (Code Spell checker) et d'autocomplétion 
+(IntelliSense) ont été utilisés comme aide à la rédaction.
+
 
 % -------------------------
 % Bibliographie
 % -------------------------
-% \begin{thebibliography}{9}
+\begin{thebibliography}{9}
 
-% \bibitem{latex}
-% Leslie Lamport,
-% \textit{LaTeX: A Document Preparation System},
-% Addison-Wesley, 1994.
+\bibitem{site}
+Pan, S., Luo, L., Wang, Y., Chen, C., Wang, J. et Wu, X.
+\textit{Unifying Large Language Models and Knowledge Graphs: A Roadmap},
+\url{https://arxiv.org/pdf/2306.08302},
+consulté le 18 septembre 2026.
 
-% \bibitem{article}
-% Nom de l'auteur,
-% ``Titre de l'article'',
-% \textit{Nom de la revue}, volume, numéro, année.
+\bibitem{site}
+Edge, D., Trinh, H., Cheng, N., Bradley, J., Chao, A., Mody, S., Truitt, S. et Larson, J. 
+\textit{From Local to Global: A GraphRAG Approach to Query-Focused Summarization},
+\url{https://arxiv.org/pdf/2404.16130v2},
+consulté le 18 septembre 2026.
 
-% \bibitem{site}
-% Nom de l'auteur ou de l'organisation,
-% \textit{Titre de la page web},
-% \url{https://www.exemple.com},
-% consulté le 18 septembre 2026.
-
-% \end{thebibliography}
-
-% -------------------------
-% Annexes
-% -------------------------
-% \appendix
-
-% \chapter{Annexe A : Code source}
-
-% Présentez ici des extraits de code, des tableaux supplémentaires ou des documents complémentaires.
-
-% \chapter{Annexe B : Informations supplémentaires}
-
-% Ajoutez ici les éléments qui ne sont pas indispensables à la compréhension du rapport principal.
+\end{thebibliography}
 
 \end{document}
