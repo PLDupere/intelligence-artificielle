@@ -22,3 +22,6 @@ __pycache__/
 rapport/*
 !rapport/document.tex
 !rapport/document.pdf
+
+# Output
+output/*
