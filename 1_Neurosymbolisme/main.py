@@ -55,8 +55,12 @@ def main():
                 write_log(output_file, "\nQuestion:" + question)
                 # 5. Neo4j retourne les faits pertinents
                 result = assistant.pipeline_query(question)
-                # 6. Ollama génère une réponse
+        
+                # 6. Ollama génère une réponse et verification
                 write_log(output_file, f"Answer: {result['answer']}")
+                write_log(output_file, f"Generated fact: {result['generated_fact']}")
+                write_log(output_file, f"Verification: {result['verification']}")
+                write_log(output_file, f"Verification_fact: {result['verification_fact']}")
                 write_log(output_file, "Graph facts:")
 
                 # 7. Neo4j vérifie symboliquement la relation

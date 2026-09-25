@@ -1,0 +1,102 @@
+
+=== Processing france.txt ===
+Paris is the capital of France.
+France is located in Europe.
+The French language is spoken in France.
+
+Stored facts:
+{'head_entity': 'Paris', 'relation': 'CAPITAL_OF', 'tail_entity': 'France'}
+{'head_entity': 'France', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'French language', 'relation': 'SPOKEN_IN', 'tail_entity': 'France'}
+
+=== Processing germany.txt ===
+Berlin is the capital of Germany.
+Germany is located in Europe.
+The German language is spoken in Germany.
+
+Stored facts:
+{'head_entity': 'Berlin', 'relation': 'CAPITAL_OF', 'tail_entity': 'Germany'}
+{'head_entity': 'Germany', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'German language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Germany'}
+
+=== Processing italy.txt ===
+Rome is the capital of Italy.
+Italy is located in Europe.
+The Italian language is spoken in Italy.
+
+Stored facts:
+{'head_entity': 'Rome', 'relation': 'CAPITAL_OF', 'tail_entity': 'Italy'}
+{'head_entity': 'Italy', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Italian language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Italy'}
+
+=== Processing portugal.txt ===
+Lisbon is the capital of Portugal.
+Portugal is located in Europe.
+The Portuguese language is spoken in Portugal.
+
+Stored facts:
+{'head_entity': 'Lisbon', 'relation': 'CAPITAL_OF', 'tail_entity': 'Portugal'}
+{'head_entity': 'Portugal', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Portuguese language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Portugal'}
+
+=== Processing spain.txt ===
+Madrid is the capital of Spain.
+Spain is located in Europe.
+The Spanish language is spoken in Spain.
+
+Stored facts:
+{'head_entity': 'Madrid', 'relation': 'CAPITAL_OF', 'tail_entity': 'Spain'}
+{'head_entity': 'Spain', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Spanish language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Spain'}
+
+Question:What is the capital of france?
+Answer: Paris
+Generated fact: {'answer': 'Paris', 'head_entity': 'Paris', 'relation': 'CAPITAL_OF', 'tail_entity': 'France'}
+Verification: {'verified': True, 'generated_triplet': ('paris', 'CAPITAL_OF', 'france'), 'matching_triplet': ('paris', 'CAPITAL_OF', 'france')}
+Verification_fact: PASS
+Graph facts:
+{'head_entity': 'Paris', 'relation': 'CAPITAL_OF', 'tail_entity': 'France'}
+{'head_entity': 'France', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'French language', 'relation': 'SPOKEN_IN', 'tail_entity': 'France'}
+
+Question:What is the capital of germany?
+Answer: Berlin
+Generated fact: {'answer': 'Berlin', 'head_entity': 'Berlin', 'relation': 'CAPITAL_OF', 'tail_entity': 'Germany'}
+Verification: {'verified': True, 'generated_triplet': ('berlin', 'CAPITAL_OF', 'germany'), 'matching_triplet': ('berlin', 'CAPITAL_OF', 'germany')}
+Verification_fact: PASS
+Graph facts:
+{'head_entity': 'Berlin', 'relation': 'CAPITAL_OF', 'tail_entity': 'Germany'}
+{'head_entity': 'Germany', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'German language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Germany'}
+
+Question:What is the capital of italy?
+Answer: Rome
+Generated fact: {'answer': 'Rome', 'head_entity': 'Rome', 'relation': 'CAPITAL_OF', 'tail_entity': 'Italy'}
+Verification: {'verified': True, 'generated_triplet': ('rome', 'CAPITAL_OF', 'italy'), 'matching_triplet': ('rome', 'CAPITAL_OF', 'italy')}
+Verification_fact: PASS
+Graph facts:
+{'head_entity': 'Rome', 'relation': 'CAPITAL_OF', 'tail_entity': 'Italy'}
+{'head_entity': 'Italy', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Italian language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Italy'}
+
+Question:What is the capital of portugal?
+Answer: Lisbon
+Generated fact: {'answer': 'Lisbon', 'head_entity': 'Lisbon', 'relation': 'CAPITAL_OF', 'tail_entity': 'Portugal'}
+Verification: {'verified': True, 'generated_triplet': ('lisbon', 'CAPITAL_OF', 'portugal'), 'matching_triplet': ('lisbon', 'CAPITAL_OF', 'portugal')}
+Verification_fact: PASS
+Graph facts:
+{'head_entity': 'Lisbon', 'relation': 'CAPITAL_OF', 'tail_entity': 'Portugal'}
+{'head_entity': 'Portugal', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Portuguese language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Portugal'}
+
+Question:What is the capital of spain?
+Answer: Madrid
+Generated fact: {'answer': 'Madrid', 'head_entity': 'Madrid', 'relation': 'CAPITAL_OF', 'tail_entity': 'Spain'}
+Verification: {'verified': True, 'generated_triplet': ('madrid', 'CAPITAL_OF', 'spain'), 'matching_triplet': ('madrid', 'CAPITAL_OF', 'spain')}
+Verification_fact: PASS
+Graph facts:
+{'head_entity': 'Madrid', 'relation': 'CAPITAL_OF', 'tail_entity': 'Spain'}
+{'head_entity': 'Spain', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
+{'head_entity': 'Spanish language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Spain'}
+
+THE END

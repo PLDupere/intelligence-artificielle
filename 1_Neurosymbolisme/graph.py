@@ -70,6 +70,27 @@ class Graph:
 
 
 
+    def fact_exists(self, head_entity, relation, tail_entity):
+        relation = self.clean_relation(relation)
+
+        query = f"""
+            MATCH (head:Entity)-[r:{relation}]->(tail:Entity)
+            WHERE toLower(head.name) = toLower($head_entity)
+            AND toLower(tail.name) = toLower($tail_entity)
+            RETURN count(r) > 0 AS exists
+        """
+
+        records, _, _ = self.driver.execute_query(
+            query,
+            head_entity=head_entity,
+            tail_entity=tail_entity,
+            database_=self.database,
+        )
+
+        return records[0]["exists"] if records else False
+
+
+
     @staticmethod
     def clean_relation(relation):
         relation = relation.upper()
