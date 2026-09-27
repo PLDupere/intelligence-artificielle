@@ -1,5 +1,5 @@
 
-=== Processing france.txt ===
+=== france.txt ===
 Paris is the capital of France.
 France is located in Europe.
 The French language is spoken in France.
@@ -9,7 +9,7 @@ Stored facts:
 {'head_entity': 'France', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
 {'head_entity': 'French language', 'relation': 'SPOKEN_IN', 'tail_entity': 'France'}
 
-=== Processing germany.txt ===
+=== germany.txt ===
 Berlin is the capital of Germany.
 Germany is located in Europe.
 The German language is spoken in Germany.
@@ -19,7 +19,7 @@ Stored facts:
 {'head_entity': 'Germany', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
 {'head_entity': 'German language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Germany'}
 
-=== Processing italy.txt ===
+=== italy.txt ===
 Rome is the capital of Italy.
 Italy is located in Europe.
 The Italian language is spoken in Italy.
@@ -29,7 +29,7 @@ Stored facts:
 {'head_entity': 'Italy', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
 {'head_entity': 'Italian language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Italy'}
 
-=== Processing portugal.txt ===
+=== portugal.txt ===
 Lisbon is the capital of Portugal.
 Portugal is located in Europe.
 The Portuguese language is spoken in Portugal.
@@ -39,7 +39,7 @@ Stored facts:
 {'head_entity': 'Portugal', 'relation': 'LOCATED_IN', 'tail_entity': 'Europe'}
 {'head_entity': 'Portuguese language', 'relation': 'SPOKEN_IN', 'tail_entity': 'Portugal'}
 
-=== Processing spain.txt ===
+=== spain.txt ===
 Madrid is the capital of Spain.
 Spain is located in Europe.
 The Spanish language is spoken in Spain.

@@ -150,7 +150,7 @@ dans les LLM : l'enrichissement des LLM par les graphes de connaissances, l'amé
 graphes de connaissances grâce aux LLM.
 
 % ----------------------------------------------
-\section{Les LLM enrichis par des KG}
+\section{Formation des LLM avec des Graphe de connaissances}
 Les grands modèles de langage (LLM) sont généralement entraînés de manière non supervisée sur 
 de vastes corpus. Malgré leurs bonnes performance. Ils peuvent manquer de connaissances 
 pratiques et actualisées sur le monde réel.
@@ -171,27 +171,7 @@ et leurs décisions. Les KG représentent les connaissances de manière structur
 ce qui peut rendre les raisonnements du modèle plus faciles à expliquer.
 
 % ----------------------------------------------
-\section{Les KG augmentés par des LLM}
-(Embeddings) de KG augmentés par LLM : 
-L'objectif est de convertir les entités et relations en vecteurs mathématiques. Contrairement aux méthodes classiques limitées à la structure du graphe.
-
-
-Complétion de KG augmentée par LLM : 
-Cette méthode vise à déduire les faits manquants dans un graphe. 
-On utilise des pipelines de LLM pour prédire les descriptions d'entités et identifier l'élément manquant dans un triplet.
-
-Construction de KG augmentée par LLM : 
-Les LLM font la création de graphes structurés en automatisant la découverte d'entités, la résolution de coréférences et l'extraction de relations.
-
-Génération de texte à partir de KG : 
-Ce processus transforme des données structurées en texte naturel pour pallier le manque de 
-données d'entraînement. On exploite les connaissances intrinsèques des LLM.
-
-Questions-Réponses sur KG : 
-Le but est de répondre à des questions naturelles via des faits structurés. 
-Les LLM comblent le fossé entre le langage souple et le graphe rigide en jouant deux rôles.
-
-\section{Les KG augmentés par des LLM}
+\section{Les Graphes de connaissances augmentés par des LLM}
 
 \begin{itemize}
     \item \textbf{Embeddings de KG augmentés par LLM :} L'objectif est de convertir les entités et relations en vecteurs mathématiques.
@@ -268,7 +248,7 @@ recherche visant à unifier les graphes de connaissances et les LLM.
 \chapter{From Local to Global: A GraphRAG Approach to Query-Focused Summarization [2]}
 
 \section{Mise en contexte}
-Le RAG est une méthode qui permet à un modèle de langage de rechercher des informations dans des sources 
+Le RAG (retrieval-augmented generation) est une méthode qui permet à un modèle de langage de rechercher des informations dans des sources 
 externes avant de générer une réponse. Cette approche est utile lorsque les données sont trop nombreuses 
 pour être intégrées entièrement dans la fenêtre de contexte du modèle.
 

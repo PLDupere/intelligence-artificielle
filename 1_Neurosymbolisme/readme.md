@@ -12,23 +12,12 @@
 
 ## Installation de Ollama
 docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-docker ps
 docker exec -it ollama ollama pull llama3.1
 docker exec -it ollama ollama list
 docker exec -it ollama ollama run llama3.1
 
 ## Installation de neo4j
 docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/changez-moi -v neo4j_data:/data neo4j:2026.09.0
-
-## une extraction d'entités/relations à partir d'un corpus et vérification symbolique de la cohérence des sorties
-- 1. input.txt
-- 2. Ollama extrait les faits
-- 3. Neo4j stocke les relations
-- 4. Ollama pose une question au graphe
-- 5. Neo4j retourne les faits pertinents
-- 6. Ollama génère une réponse
-- 7. Neo4j vérifie symboliquement la relation
-- 8. output.txt
 
 ## Connecter a l'interface neo4j
 http://localhost:7474
@@ -42,6 +31,16 @@ RETURN head, relation, tail;
 ## Supprime le graph
 MATCH (n)
 DETACH DELETE n;
+
+## une extraction d'entités/relations à partir d'un corpus et vérification symbolique de la cohérence des sorties
+- 1. input.txt
+- 2. Ollama extrait les faits
+- 3. Neo4j stocke les relations
+- 4. Ollama pose une question au graphe
+- 5. Neo4j retourne les faits pertinents
+- 6. Ollama génère une réponse
+- 7. Neo4j vérifie symboliquement la relation
+- 8. output.txt
 
 ## References
 https://www.aitooldiscovery.com/how-to/run-ollama-locally

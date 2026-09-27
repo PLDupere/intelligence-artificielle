@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from graph import Graph
 from llm import LLM
 
@@ -33,7 +32,7 @@ def main():
         # 8. output.txt
         with open(OUTPUT_FILE,"w",encoding="utf-8") as output_file:
             for input_file in input_files:
-                write_log(output_file, f"\n=== Processing {input_file.name} ===")
+                write_log(output_file, f"\n=== {input_file.name} ===")
                 text = input_file.read_text(encoding="utf-8").strip()
                 write_log(output_file, text)
     

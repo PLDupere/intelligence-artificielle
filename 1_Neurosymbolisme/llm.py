@@ -179,14 +179,14 @@ class LLM:
         )
     
         answer = generated_fact["answer"].strip()
-    
+
+        # Vérifications
         verification_fact = self.graph.fact_exists(
             head_entity=generated_fact["head_entity"],
             relation=generated_fact["relation"],
             tail_entity=generated_fact["tail_entity"],
         )
 
-        # Vérification symbolique
         verification = self.symbolic_verification(
             generated_fact=generated_fact,
             graph_facts=graph_facts,
@@ -201,69 +201,6 @@ class LLM:
                 "PASS" if verification_fact else "FAIL"
             ),
         }
-
-    # def pipeline_query(self, question):
-    #     question_extraction = self.extract_facts(question)
-
-    #     entities = set()
-
-    #     for fact in question_extraction.get("facts", []):
-    #         entities.add(fact["head_entity"])
-    #         entities.add(fact["tail_entity"])
-
-    #     graph_facts = []
-
-    #     for entity in entities:
-    #         facts = self.graph.search_facts(entity)
-
-    #         if facts:
-    #             graph_facts.extend(facts)
-
-    #     # Suppression des doublons
-    #     unique_facts = {
-    #         (
-    #             fact["head_entity"],
-    #             fact["relation"],
-    #             fact["tail_entity"],
-    #         ): fact
-    #         for fact in graph_facts
-    #     }
-
-    #     graph_facts = list(unique_facts.values())
-
-    #     if not graph_facts:
-    #         return {
-    #             "answer": "Information is not available in the graph.",
-    #             "graph_facts": [],
-    #             "generated_fact": None,
-    #             "verification": {
-    #                 "verified": False,
-    #                 "generated_triplet": None,
-    #                 "matching_triplet": None,
-    #             },
-    #         }
-
-    #     # Génération du triplet par le LLM
-    #     generated_fact = self.generate_structured_answer(
-    #         question=question,
-    #         graph_facts=graph_facts,
-    #     )
-
-    #     # Vérification symbolique
-    #     verification = self.symbolic_verification(
-    #         generated_fact=generated_fact,
-    #         graph_facts=graph_facts,
-    #     )
-
-    #     return {
-    #         "answer": generated_fact["answer"],
-    #         "graph_facts": graph_facts,
-    #         "generated_fact": generated_fact,
-    #         "verification": verification,
-    #         "verification_fact": (
-    #             "PASS" if verification["verified"] else "FAIL"
-    #         ),
-    #     }
 
 
 
@@ -291,7 +228,7 @@ class LLM:
             Question:
             {question}
 
-            With:
+            Graph facts:
             {graph_facts}
             
 
