@@ -44,8 +44,6 @@
     linkcolor=black,
     urlcolor=blue,
     citecolor=black,
-    % pdftitle={Titre du rapport},
-    % pdfauthor={Nom Prénom}
 }
 
 \pagestyle{fancy}
@@ -87,7 +85,7 @@
 
         \begin{flushleft}
             \textbf{Réalisé par :} Pier-Luc Dupéré \\[0.4cm]
-            \textbf{Encadré par :} Mehdi Adda, PhD 
+            \textbf{Professeur :} Mehdi Adda, PhD 
         \end{flushleft}
 
         \vfill
@@ -105,122 +103,270 @@
 \clearpage
 \pagenumbering{arabic}
 
-\chapter{Introduction}
 
-Présentez ici le contexte général du sujet, la problématique et l'intérêt du travail.
+% -----------------------------------------------------
+\chapter{Quantification}
 
-\section{Contexte}
-Décrivez le contexte universitaire, professionnel ou scientifique du rapport.
+ous proposons AWQ (Activation-aware Weight Quantization), une méthode adaptée au matériel pour la 
+quantification des poids des LLM en faible précision (low-bit). AWQ repose sur le constat que tous 
+les poids d'un LLM n'ont pas la même importance ; la préservation de seulement 1 pourcentage
+ des poids dits « saillants » permet de réduire considérablement l'erreur de quantification. 
+ Pour identifier ces canaux de poids saillants, il convient de se baser sur la distribution des 
+ activations plutôt que sur les poids eux-mêmes. Afin d'éviter la quantification à précision mixte 
+ (inefficace sur le plan matériel), nous démontrons mathématiquement que l'amplification (mise à l'échelle)
+  des canaux saillants permet de réduire l'erreur de quantification.
 
-\section{Problématique}
-Présentez la question principale à laquelle votre travail tente de répondre.
 
-\section{Objectifs}
-Les objectifs de ce rapport sont les suivants :
+
+La quantification des poids en faible précision pour les LLM peut réduire considérablement 
+l'empreinte mémoire de l'inférence sur appareil, mais elle s'avère complexe. L'entraînement 
+prenant en compte la quantification (QAT) manque d'efficacité en raison de son coût d'entraînement 
+élevé, tandis que la quantification post-entraînement (PTQ) entraîne une dégradation importante de 
+la précision en faible précision. Les travaux les plus proches sont ceux de GPTQ (Frantar et al., 2022),
+ qui utilisent des informations du second ordre pour compenser les erreurs. Toutefois, cette méthode risque 
+ de surapprendre l'ensemble de calibration lors de la reconstruction, ce qui altère les caractéristiques 
+ apprises pour des domaines hors distribution (Figure 8) ; cela pose problème dans la mesure où les LLM 
+ sont des modèles généralistes.
+
+
+
+
+
+
+
+
+
+
+Quantification post-entraînement (PTQ) : INT8, INT4, GGUF, AWQ, GPTQ, SmoothQuant - compromis
+taille/vitesse/qualité
+
+
+Quantification pendant l'entraînement (QAT) : bits-and-bytes, QLoRA (4-bit + adapters LoRA).
+
+
+
+
+
+
+
+
+
+% -----------------------------------------------------
+\chapter{Élagage (pruning)}
+Élagage (pruning) : structuré vs non structuré, sparseGPT, Wanda, magnitude pruning.
+
+SparseGPT procède en ramenant le problème de l'élagage (ne seule étape) à un ensemble d'instances de régression 
+creuse à très grande échelle. Il résout ensuite ces instances grâce à un nouvel algorithme de 
+résolution approchée pour la régression creuse, suffisamment efficace pour s'exécuter en quelques 
+heures sur les plus grands modèles GPT accessibles au public (175 milliards de paramètres) à l'aide 
+d'un seul GPU
+
+
+parseGPT offre une précision telle que la perte de performance après élagage est négligeable, et ce sans 
+aucun réglage fin (*fine-tuning*).
+
+
+L'élagage après entraînement (*Post-Training Pruning*) est un scénario pratique dans lequel on dispose 
+d'un modèle $\theta$ bien optimisé et de données de calibration, et où l'on doit obtenir une version compressée de $\theta$ 
+
+
+Élagage couche par couche. La compression après entraînement s'effectue généralement en décomposant le problème de 
+compression du modèle complet en sous-problèmes propres à chaque couche.
+
+la qualité de la solution est alors mesurée par l'erreur L2 entre la sortie de la couche non compressée (de poids W) et celle 
+de la couche compressée, pour des entrées X données.
+
+Difficulté de passer à l'échelle pour atteindre plus de 100 milliards de paramètres. Les techniques de 
+post-entraînement existantes ont toutes été conçues pour compresser avec précision des modèles comptant 
+jusqu'à quelques centaines de millions de paramètres.
+
+
+
+
+
+
+
+
+
+
+% -----------------------------------------------------
+\chapter{Distillation}
+Distillation : knowledge distillation classique, distillation de LLM vers petit LLM (TinyLlama, Phi, distil-
+whisper, etc.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% -----------------------------------------------------
+\chapter{Adaptation efficace (PEFT) LoRA/QLoRA}
+
+QLoRA est une méthode de réglage fin efficace en paramètres qui combine un modèle pré-entraîné figé 
+et quantifié en 4 bits avec des adaptateurs LoRA de bas rang.
+
+QLoRA permet notamment d'ajuster des modèles très volumineux, jusqu'à 65 milliards de paramètres, 
+sur un seul GPU de 48 Go, tout en conservant des performances proches d'un réglage fin complet en 
+précision 16 bits. Le banc d'essai Vicuna, atteignant 99,3 \% des performances de ChatGPT tout en 
+ne nécessitant que 24 heures d'ajustement fin sur un seul GPU.
 
 \begin{itemize}
-    \item présenter le contexte du projet ;
-    \item expliquer la méthodologie utilisée ;
-    \item analyser les résultats obtenus ;
-    \item proposer des perspectives d'amélioration.
+    \item \textbf{Le format 4-bit NormalFloat NF4 :} un nouveau type de données optimal au sens de la théorie de l'information pour des poids suivant une distribution normale. Cette méthode repose sur la quantification par quantiles, une méthode optimale du point de vue de la théorie de l'information qui garantit que chaque intervalle de quantification reçoit un nombre égal de valeurs issues du tenseur d'entrée.
+    \item \textbf{Double quantification :} la double quantification, pour réduire l'empreinte mémoire moyenne en quantifiant les constantes de quantification. La première étape comme des entrées pour une seconde quantification. Cette étape produit des constantes de quantification quantifiées. La seconde étapes, on utilise des nombres à virgule flottante sur 8 bits avec une taille de bloc de 256, car aucune dégradation des performances n'est observée avec une quantification sur 8 bits.
+    \item \textbf{Optimiseurs paginés :} pour gérer les pics de consommation mémoire et evite tout dépassent. On exploitent la fonctionnalité « Unified Memory 3 » de NVIDIA, qui assure des transferts automatiques de pages entre le CPU et le GPU. Cela permet un traitement GPU sans erreur même lorsque la mémoire du GPU vient à manquer ponctuellement.
 \end{itemize}
 
-\section{Organisation du rapport}
-Ce rapport est organisé en plusieurs chapitres. Le premier chapitre présente le contexte, le deuxième décrit la méthodologie et le troisième analyse les résultats.
-
-\chapter{État de l'art}
-
-\section{Présentation générale}
-Présentez les concepts et les travaux existants liés à votre sujet.
-
-\section{Travaux connexes}
-Discutez des recherches, méthodes ou solutions déjà proposées.
-
-\section{Synthèse}
-Comparez les différentes approches et expliquez le choix retenu.
-
-\chapter{Méthodologie}
-
-\section{Matériel et outils}
-Présentez les logiciels, outils, équipements ou données utilisés.
-
-\begin{table}[H]
-    \centering
-    \caption{Outils utilisés}
-    \begin{tabular}{lll}
-        \toprule
-        Outil & Version & Utilisation \\
-        \midrule
-        LaTeX & 2025 & Rédaction du rapport \\
-        Python & 3.x & Analyse des données \\
-        Git & 2.x & Gestion du projet \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\section{Méthode de travail}
-Expliquez les différentes étapes suivies pour réaliser le travail.
-
-\section{Architecture ou processus}
-Insérez ici un schéma, une architecture ou un diagramme.
+QLORA utilise un type de données de stockage à faible précision (généralement 4 bits dans notre cas) 
+et un type de données de calcul (généralement BFloat16). En pratique, cela signifie que chaque fois 
+qu'un tenseur de poids QLORA est utilisé, nous déquantifions le tenseur en BFloat16, puis nous 
+effectuons une multiplication matricielle en 16 bits. Nous présentons maintenant les composants 
+de QLORA.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{img/schema.png}
-    \caption{Schéma général du projet}
-    \label{fig:schema}
-\end{figure}
-
-La figure~\ref{fig:schema} présente l'organisation générale du projet.
-
-\chapter{Réalisation}
-
-\section{Développement}
-Décrivez les étapes de réalisation du projet.
-
-\section{Implémentation}
-Vous pouvez insérer du code ou des équations.
-
-Exemple d'équation :
-
-\begin{equation}
-    E = mc^2
-    \label{eq:energie}
-\end{equation}
-
-\section{Difficultés rencontrées}
-Présentez les problèmes rencontrés ainsi que les solutions adoptées.
-
-\chapter{Résultats et discussion}
-
-\section{Résultats obtenus}
-Présentez et analysez vos résultats.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{img/resultats.png}
-    \caption{Résultats obtenus}
+    \includegraphics[width=0.75\textwidth]{img/QLoRA.JPG}
+    \caption{QLoRA améliore LoRA en quantifiant le modèle Transformer à une précision de 4 bits.}
     \label{fig:resultats}
 \end{figure}
 
-\section{Interprétation}
-Expliquez la signification des résultats et comparez-les avec les objectifs initiaux.
 
-\section{Limites du travail}
-Présentez les limites de votre étude ou de votre projet.
+(Low-rank Adapters) : Le réglage fin par adaptateurs de rang faible (LoRA) [28] est une méthode 
+qui réduit les besoins en mémoire en utilisant un petit ensemble de paramètres entraînables — 
+souvent appelés adaptateurs — sans mettre à jour l'intégralité des paramètres du modèle, qui restent 
+figés
 
-\chapter{Conclusion et perspectives}
 
-Ce rapport a permis de présenter le contexte, la méthodologie et les résultats du travail réalisé.
+Un point important à considérer concerne les besoins en mémoire de LoRA durant l'entraînement, 
+tant en termes de nombre que de taille des adaptateurs utilisés. L'empreinte mémoire de LoRA étant 
+très réduite, il est possible d'utiliser davantage d'adaptateurs pour améliorer les performances sans 
+augmenter de manière significative la mémoire totale consommée.
 
-Les principaux résultats montrent que les objectifs fixés ont été atteints. Cependant, certaines améliorations restent possibles, notamment :
 
-\begin{itemize}
-    \item améliorer la précision des résultats ;
-    \item tester la solution sur un ensemble de données plus important ;
-    \item ajouter de nouvelles fonctionnalités ;
-    \item optimiser les performances.
-\end{itemize}
+ 
+
+
+
+
+% \section{Organisation du rapport}
+% Ce rapport est organisé en plusieurs chapitres. Le premier chapitre présente le contexte, le deuxième décrit la méthodologie et le troisième analyse les résultats.
+
+% \chapter{État de l'art}
+
+% \section{Présentation générale}
+% Présentez les concepts et les travaux existants liés à votre sujet.
+
+% \section{Travaux connexes}
+% Discutez des recherches, méthodes ou solutions déjà proposées.
+
+% \section{Synthèse}
+% Comparez les différentes approches et expliquez le choix retenu.
+
+% \chapter{Méthodologie}
+
+% \section{Matériel et outils}
+% Présentez les logiciels, outils, équipements ou données utilisés.
+
+% \begin{table}[H]
+%     \centering
+%     \caption{Outils utilisés}
+%     \begin{tabular}{lll}
+%         \toprule
+%         Outil & Version & Utilisation \\
+%         \midrule
+%         LaTeX & 2025 & Rédaction du rapport \\
+%         Python & 3.x & Analyse des données \\
+%         Git & 2.x & Gestion du projet \\
+%         \bottomrule
+%     \end{tabular}
+% \end{table}
+
+% \section{Méthode de travail}
+% Expliquez les différentes étapes suivies pour réaliser le travail.
+
+% \section{Architecture ou processus}
+% Insérez ici un schéma, une architecture ou un diagramme.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{img/schema.png}
+%     \caption{Schéma général du projet}
+%     \label{fig:schema}
+% \end{figure}
+
+% La figure~\ref{fig:schema} présente l'organisation générale du projet.
+
+% \chapter{Réalisation}
+
+% \section{Développement}
+% Décrivez les étapes de réalisation du projet.
+
+% \section{Implémentation}
+% Vous pouvez insérer du code ou des équations.
+
+% Exemple d'équation :
+
+% \begin{equation}
+%     E = mc^2
+%     \label{eq:energie}
+% \end{equation}
+
+% \section{Difficultés rencontrées}
+% Présentez les problèmes rencontrés ainsi que les solutions adoptées.
+
+% \chapter{Résultats et discussion}
+
+% \section{Résultats obtenus}
+% Présentez et analysez vos résultats.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.75\textwidth]{img/resultats.png}
+%     \caption{Résultats obtenus}
+%     \label{fig:resultats}
+% \end{figure}
+
+% \section{Interprétation}
+% Expliquez la signification des résultats et comparez-les avec les objectifs initiaux.
+
+% \section{Limites du travail}
+% Présentez les limites de votre étude ou de votre projet.
+
+% \chapter{Conclusion et perspectives}
+
+% Ce rapport a permis de présenter le contexte, la méthodologie et les résultats du travail réalisé.
+
+% Les principaux résultats montrent que les objectifs fixés ont été atteints. Cependant, certaines améliorations restent possibles, notamment :
+
+% \begin{itemize}
+%     \item améliorer la précision des résultats ;
+%     \item tester la solution sur un ensemble de données plus important ;
+%     \item ajouter de nouvelles fonctionnalités ;
+%     \item optimiser les performances.
+% \end{itemize}
 
 % -------------------------
 % Bibliographie
