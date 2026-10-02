@@ -35,6 +35,16 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{enumitem}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+
+
+\setlist[itemize]{
+    leftmargin=*,
+    nosep
+}
+
 
 % -------------------------
 % Configuration
@@ -95,7 +105,7 @@
 
 \tableofcontents
 \listoffigures
-% \listoftables
+\listoftables
 
 % -------------------------
 % Corps du rapport
@@ -105,7 +115,7 @@
 
 
 % -----------------------------------------------------
-\chapter{Quantification}
+\chapter{Quantification [1]}
 
 La quantification est un processus qui consiste à représenter des données numériques avec une précision 
 réduite afin d'en diminuer la taille ou d'en simplifier le traitement.Cette réduction de la précision permet 
@@ -123,12 +133,12 @@ Il existe différentes stratégies existent pour quantifier les grands modèles 
 
 \begin{itemize}
     \item \textbf{Quantification post-entraînement (PTQ) : } fait référence à l'ajustement des poids du modèle une fois l'entraînement terminé.
-    \item \textbf{Formation de la quantification (QAT) : } intègre le processus de quantification pendant la formation du modèle. De plus, les modèles peuvent apprendre à s'adapter aux contraintes de précision dès le départ.
+    \item \textbf{Quantification pendant l'entraînement  (QAT) : } intègre le processus de quantification pendant la formation du modèle. De plus, les modèles peuvent apprendre à s'adapter aux contraintes de précision dès le départ.
 \end{itemize}
 
-La quantification peut entraîner des pertes lorsque les LLM sont des modèles généralistes.La quantification 
-(QAT) peut manqué d'efficacité en raison de son coût d'entraînement élevé. La quantification 
-post-entraînement (PTQ) entraîne une dégradation importante de la précision en faible précision. 
+La quantification peut entraîner des pertes lorsque les LLM sont des modèles généralistes. Quantification pendant l'entraînement 
+peut manqué d'efficacité en raison de son coût d'entraînement élevé. La quantification post-entraînement peut entraîner une légère dégradation
+des performances, particulièrement lorsque la précision utilisée est très faible. 
 
 AWQ (Activation Aware Weight Quantization) est une méthode de quantification qui atteint une excellente 
 compression avec une perte de qualité minimale. L'idée derrière AWQ est que tous les poids d'un modèle 
@@ -138,10 +148,18 @@ plus de précision aux poids ayant le plus grand impact sur la sortie. Le proces
 analysant un petit ensemble de données de calibration. AWQ mesure quels poids ont la plus forte 
 influence sur les résultats.
 
+La PTQ ne nécessite pas de ré-entraîner le
+modèle ni de modifier l'ensemble de ses paramètres. Elle consiste à
+quantifier un modèle déjà entraîné à l'aide d'un petit jeu de données de
+calibration.
 
+% TODO : PLD
+La quantification post-entraînement (PTQ) est la plus simple à implémenter. Elle ne nécessite pas de 
+réentraîner le modèle. Il suffit de charger un modèle déjà entraîné, de le convertir vers une précision 
+plus faible, puis d'évaluer ses performances. Cette technique va faire partie de mon travail pratique. 
 
 % -----------------------------------------------------
-\chapter{Élagage (pruning)}
+\chapter{Élagage (pruning) [2]}
 L'élagage est le processus consistant à éliminer les poids, neurones ou couches inutiles d'un 
 réseau de neurones afin d'obtenir un modèle plus compact, plus rapide et plus efficace. 
 
@@ -179,51 +197,65 @@ de l'optimisation via de l'élagage :
     \item \textbf{Élagage global ou local : } Supprimer les plus petits poids sur l'ensemble du modèle global. Enlève des poids au sein de couches individuelles.
 \end{itemize}
 
-
-
-% -----------------------------------------------------
-\chapter{Distillation}
-Distillation : knowledge distillation classique, distillation de LLM vers petit LLM (TinyLlama, Phi, distil-
-whisper, etc.)
-
-
-
-La distillation transfère les connaissances d’un modèle enseignant vers un modèle étudiant. L’étudiant apprend à reproduire les sorties de l’enseignant, éventuellement à partir d’une combinaison de perte supervisée et de perte de distillation
-La distillation permet de réduire directement la taille de l’architecture. Elle peut donc produire des gains importants en mémoire et en latence. Toutefois, elle nécessite :
-
-    un modèle enseignant performant ;
-    un corpus représentatif ;
-    une phase d’entraînement supplémentaire ;
-    un réglage de la température et des pondérations de pertes.
-
-Elle est particulièrement intéressante lorsque la latence cible est stricte ou lorsqu’un modèle beaucoup plus petit est nécessaire. Elle est moins adaptée si l’objectif prioritaire est de conserver le comportement général d’un grand modèle avec un budget expérimental limité.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% TODO : PLD
+La quantification post-entraînement (PTQ) va être dans mon TP2. Mon objectif est de rendre un modèle plus 
+accessible malgré les ressources limitées de ton GPU.
 
 % -----------------------------------------------------
-\chapter{LoRA/QLoRA}
+\chapter{Distillation [3]}
+
+On peut utiliser la plusieurs façons pour transférer ses connaissances vers un modèle plus petit et plus facile 
+à déployer. Le concept consiste à transférer les connaissances du modèle lourd vers un modèle plus compact, il est possible 
+d'entraîner ce dernier à généraliser de la même façon que le grand modèle. On peut utiliser la moyenne 
+arithmétique ou géométrique de leurs distributions prédictives individuelles comme cibles souples.
+
+Une solution appelée la distillation, consiste à augmenter la température de la fonction 
+finale jusqu'à ce que le modèle volumineux produise un ensemble de cibles suffisamment lissées.
+Plus T est élevé, plus la distribution de probabilité est douce et uniforme. À l'inverse, quand T se rapproche de 1.
+
+La distillation consiste à transférer des connaissances vers le modèle distillé en l'entraînant sur un 
+ensemble de transfert pour chaque cas de cet ensemble. On utilise une distribution cible lissée 
+générée par le modèle volumineux avec une température élevée dans sa fonction de sa température.
+
+La distillation des connaissances repose sur deux modèles :
+\begin{itemize}
+    \item \textbf{Le modèle enseignant (teacher) : } est un modèle volumineux et performant, préalablement entraîné.
+    \item \textbf{Le modèle distillé (student) : } est un modèle plus petit, entraîné pour reproduire les prédictions du modèle enseignant.
+\end{itemize}
+
+La température agit en fonction de la formule ci-dessous:
+
+\begin{equation}
+q_i^{(T)}
+=
+\operatorname{softmax}\left(\frac{z_i^{t}}{T}\right)
+=
+\frac{\exp\left(z_i^{t}/T\right)}
+{\displaystyle\sum_{j=1}^{C}
+\exp\left(z_j^{t}/T\right)}
+\end{equation}
+
+\begin{itemize}
+    \item $z_i^{t}$ est le vecteur de logit du modèle enseignant pour la classe $i$ ;
+    \item $C$ est le nombre total de classes ;
+    \item $T$ est la température ;
+    \item $q_i^{(T)}$ est la probabilité produite par le modèle enseignant.
+\end{itemize}
+
+Le problème de cette formulation est qu'elle tend à produire des distributions très tranchées. 
+Une classe domine largement et toutes les autres reçoivent des probabilités proches de zéro. L'information 
+sur les similarités entre classes est ainsi perdue. Cela peut entraîner le sur apprentissage.
+
+Dans cet article , les effets de la combinaison de modèles acoustiques basés sur des réseaux de neurones profonds (DNN) 
+utilisés pour la reconnaissance automatique de la parole. La stratégie de distillation proposée permet 
+de condenser un ensemble de modèles en un seul modèle. 
+
+
+Je n'ai pas retenu la technique de distillation pour mon travail pratique. Je crois qu'elle est plus complexe 
+à mettre en oeuvre et nécessite un temps d'entraînement plus long.
+
+% -----------------------------------------------------
+\chapter{LoRA/QLoRA [4]}
 
 LoRA (Low-rank Adapters) : Le réglage fin par adaptateurs de rang faible (LoRA) est une méthode 
 qui réduit les besoins en mémoire en utilisant un petit ensemble de paramètres entraînables sans mettre 
@@ -262,6 +294,87 @@ effectuons une multiplication matricielle en 16 bits.
     \caption{Le modèle QLoRA avec une précision de 4 bits qui effectue la pagination en mémoire GPU.}
     \label{fig:QLoRA}
 \end{figure}
+
+Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lors de mon travail pratique.
+
+
+% -----------------------------------------------------
+\begin{table}[H]
+\centering
+\small
+\caption{Avantages et inconvénients des techniques de compression}
+\label{tab:avantages_inconvenients}
+\renewcommand{\arraystretch}{0.3}
+\begin{tabularx}{\textwidth}{
+    >{\RaggedRight\arraybackslash}p{2.8cm}
+    >{\RaggedRight\arraybackslash}X
+    >{\RaggedRight\arraybackslash}X
+}
+\toprule
+\textbf{Technique} &
+\textbf{Avantages} &
+\textbf{Inconvénients} \\
+\midrule
+
+\textbf{Quantification} &
+\begin{itemize}
+    \item Réduit la taille du modèle et sa consommation mémoire.
+    \item La quantification post-entraînement est relativement rapide à mettre en oeuvre.
+    \item Des méthodes comme AWQ préservent mieux les poids importants en analysant les activations.
+\end{itemize}
+&
+\begin{itemize}
+    \item La réduction de la précision peut entraîner une perte de performance.
+    \item La quantification peut dégrader les résultats des modèles généralistes.
+    \item La quantification consciente de l'entraînement augmente le coût et la durée de formation.
+\end{itemize}
+\\
+
+\textbf{Élagage} &
+\begin{itemize}
+    \item Supprime les poids, neurones ou couches peu importants.
+    \item Réduit le nombre de paramètres et les besoins en mémoire.
+    \item L'élagage structuré peut produire des gains réels de vitesse.
+\end{itemize}
+&
+\begin{itemize}
+    \item La suppression de paramètres peut entraîner une perte de précision.
+    \item L'élagage non structuré ne garantit pas toujours une accélération réelle.
+    \item L'identification des paramètres redondants peut être complexe.
+\end{itemize}
+\\
+
+\textbf{Distillation} &
+\begin{itemize}
+    \item Transfère les connaissances d'un modèle volumineux vers un modèle plus compact.
+    \item Réduit les besoins en mémoire et en puissance de calcul.
+    \item Les cibles souples fournissent des informations sur les similarités entre les classes.
+\end{itemize}
+&
+\begin{itemize}
+    \item Le modèle étudiant peut être moins précis que le modèle enseignant.
+    \item Les erreurs et les biais du modèle enseignant peuvent être transférés.
+    \item Le choix de la température et de la fonction de perte influence fortement les résultats.
+\end{itemize}
+\\
+
+\textbf{LoRA / QLoRA} &
+\begin{itemize}
+    \item Le format NF4 (4 bits) améliore la représentation des poids quantifiés.
+    \item La double quantification réduit davantage l'empreinte mémoire.
+    \item Les optimiseurs paginés limitent les problèmes liés aux pics de consommation mémoire.
+\end{itemize}
+&
+\begin{itemize}
+    \item Le modèle de base quantifié doit toujours être chargé pendant l'inférence.
+    \item Le choix du rang des matrices influence la qualité et le coût.
+    \item La configuration est plus complexe que celle de LoRA seul.
+\end{itemize}
+\\
+
+\bottomrule
+\end{tabularx}
+\end{table}
 
 
 
