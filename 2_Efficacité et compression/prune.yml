@@ -1,0 +1,10 @@
+version: 1.0
+
+pruning:
+  approach:
+    weight_compression:
+      target_sparsity: 0.2
+      start_epoch: 0
+      end_epoch: 1
+      pruning_type: magnitude
+      pattern: "1x1"
