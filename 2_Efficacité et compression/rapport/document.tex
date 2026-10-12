@@ -369,15 +369,15 @@ effectuons une multiplication matricielle en 16 bits.
 \chapter{Justification du choix méthodologique}
 
 Pour ce TP2, j'ai choisi d'essayer comme techniques de compression de modèles, la quantification et l'élagage 
-(pruning).
+(pruning). Je crois que c'est possible d'optimiser et de compresseur un petit model disponible.
 
 La quantification est effectuée au chargement du modèle avec BitsAndBytesConfig et la bibliothèque bitsandbytes. 
 Pour étudier l'élagage, j'applique un élagage non structuré L1 aux poids des couches linéaires avec la librairie pytorch.
 
 Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lors de mon travail pratique. De plus,
 je n'ai pas retenu la technique de distillation pour mon travail pratique. Je crois qu'elle est plus complexe 
-à mettre en oeuvre et nécessite un temps d'entraînement plus long.
-
+à mettre en oeuvre et nécessite un temps d'entraînement plus long. Je dispose de ressources matérielles pour effectuer
+ce genre d'optimisation.
 
 % -------------------------
 % Bibliographie
