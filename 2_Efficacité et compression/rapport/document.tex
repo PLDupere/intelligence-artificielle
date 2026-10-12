@@ -153,10 +153,6 @@ modèle ni de modifier l'ensemble de ses paramètres. Elle consiste à
 quantifier un modèle déjà entraîné à l'aide d'un petit jeu de données de
 calibration.
 
-% TODO : PLD
-La quantification post-entraînement (PTQ) est la plus simple à implémenter. Elle ne nécessite pas de 
-réentraîner le modèle. Il suffit de charger un modèle déjà entraîné, de le convertir vers une précision 
-plus faible, puis d'évaluer ses performances. Cette technique va faire partie de mon travail pratique. 
 
 % -----------------------------------------------------
 \chapter{Élagage (pruning) [2]}
@@ -197,9 +193,7 @@ de l'optimisation via de l'élagage :
     \item \textbf{Élagage global ou local : } Supprimer les plus petits poids sur l'ensemble du modèle global. Enlève des poids au sein de couches individuelles.
 \end{itemize}
 
-% TODO : PLD
-La quantification post-entraînement (PTQ) va être dans mon TP2. Mon objectif est de rendre un modèle plus 
-accessible malgré les ressources limitées de ton GPU.
+
 
 % -----------------------------------------------------
 \chapter{Distillation [3]}
@@ -251,9 +245,6 @@ utilisés pour la reconnaissance automatique de la parole. La stratégie de dist
 de condenser un ensemble de modèles en un seul modèle. 
 
 
-Je n'ai pas retenu la technique de distillation pour mon travail pratique. Je crois qu'elle est plus complexe 
-à mettre en oeuvre et nécessite un temps d'entraînement plus long.
-
 % -----------------------------------------------------
 \chapter{LoRA/QLoRA [4]}
 
@@ -294,8 +285,6 @@ effectuons une multiplication matricielle en 16 bits.
     \caption{Le modèle QLoRA avec une précision de 4 bits qui effectue la pagination en mémoire GPU.}
     \label{fig:QLoRA}
 \end{figure}
-
-Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lors de mon travail pratique.
 
 
 % -----------------------------------------------------
@@ -376,6 +365,18 @@ Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lo
 \end{tabularx}
 \end{table}
 
+
+\chapter{Justification du choix méthodologique}
+
+Pour ce TP2, j'ai choisi d'essayer comme techniques de compression de modèles, la quantification et l'élagage 
+(pruning).
+
+La quantification est effectuée au chargement du modèle avec BitsAndBytesConfig et la bibliothèque bitsandbytes. 
+Pour étudier l'élagage, j'applique un élagage non structuré L1 aux poids des couches linéaires avec la librairie pytorch.
+
+Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lors de mon travail pratique. De plus,
+je n'ai pas retenu la technique de distillation pour mon travail pratique. Je crois qu'elle est plus complexe 
+à mettre en oeuvre et nécessite un temps d'entraînement plus long.
 
 
 % -------------------------
