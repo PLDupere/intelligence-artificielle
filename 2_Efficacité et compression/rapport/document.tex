@@ -251,7 +251,7 @@ de condenser un ensemble de modèles en un seul modèle.
 LoRA (Low-rank Adapters) : Le réglage fin par adaptateurs de rang faible (LoRA) est une méthode 
 qui réduit les besoins en mémoire en utilisant un petit ensemble de paramètres entraînables sans mettre 
 à jour l'intégralité des paramètres du modèle. LoRA decompose la mise a jour en deux matrices de rang réduit, 
-ce qui augmente l’efficacité de LoRA en termes de mémoire et de vitesse.
+ce qui augmente l'efficacité de LoRA en termes de mémoire et de vitesse.
 
 \begin{figure}[H]
     \centering
@@ -276,8 +276,8 @@ ne nécessitant que 24 heures d'ajustement fin sur un seul GPU.
 
 QLORA utilise un type de données de stockage à faible précision (généralement 4 bits) 
 et un type de données de calcul (généralement BFloat16). En pratique, cela signifie que chaque fois 
-qu'un tenseur de poids QLORA est utilisé, nous déquantifions le tenseur en BFloat16, puis nous 
-effectuons une multiplication matricielle en 16 bits.
+qu'un tenseur de poids QLORA est utilisé.Le tenseur est déquantifié en BFloat16, puis une 
+multiplication matricielle est effectuée en 16 bits.
 
 \begin{figure}[H]
     \centering
@@ -288,7 +288,11 @@ effectuons une multiplication matricielle en 16 bits.
 
 
 % -----------------------------------------------------
-\begin{table}[H]
+\chapter{Justification du choix méthodologique}
+
+
+\begin{table}[!htbp]
+
 \centering
 \small
 \caption{Avantages et inconvénients des techniques de compression}
@@ -366,8 +370,6 @@ effectuons une multiplication matricielle en 16 bits.
 \end{table}
 
 
-\chapter{Justification du choix méthodologique}
-
 Pour ce TP2, j'ai choisi d'essayer comme techniques de compression de modèles, la quantification et l'élagage 
 (pruning). Je crois que c'est possible d'optimiser et de compresseur un petit model disponible.
 
@@ -378,6 +380,13 @@ Mon GPU n'étant pas très puissant, j'ai choisi de ne pas implémenter QLoRA lo
 je n'ai pas retenu la technique de distillation pour mon travail pratique. Je crois qu'elle est plus complexe 
 à mettre en oeuvre et nécessite un temps d'entraînement plus long. Je dispose de ressources matérielles pour effectuer
 ce genre d'optimisation.
+
+
+\section*{Notes}
+La rédaction et la mise en forme de ce document ont été réalisées avec \LaTeX{} et 
+Visual Studio Code. Les outils de correction orthographique (Code Spell checker) et d'autocomplétion 
+(IntelliSense) ont été utilisés comme aide à la rédaction.
+
 
 % -------------------------
 % Bibliographie
