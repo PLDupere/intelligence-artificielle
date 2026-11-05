@@ -10,6 +10,10 @@
 - matplotlib
 - scipy
 - Scikit-Learn 
+- transformers
+- accelerate 
+- huggingface_hub 
+- psutil
 
 Un compte Hugging Face et un token d’accès peuvent être nécessaires pour télécharger les modèles:
 https://huggingface.co/login?next=%2Fsettings%2Ftokens
