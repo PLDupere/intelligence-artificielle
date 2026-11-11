@@ -106,144 +106,179 @@
 \pagenumbering{arabic}
 
 \chapter{Introduction}
+L'entraînement des grands modèles de langage (LLM) repose d'abord sur l'apprentissage 
+auto-supervisé à partir de vastes corpus textuels. Cette étape leur permet d'apprendre des 
+régularités linguistiques et d'acquérir des connaissances. Mais, cela ne garantit pas qu'ils 
+produisent des réponses utiles, pertinentes et conformes aux attentes des utilisateurs. 
+Sans entraînement complémentaire, ils peuvent notamment générer des contenus toxiques. 
+Comme présenter des informations erronées ou mal suivre des consignes complexes.
 
-Présentez ici le contexte général du sujet, la problématique et l'intérêt du travail.
+Des méthodes d'alignement visent à orienter le comportement des modèles à partir de préférences 
+humaines. Leur déploiement systématique permettrait de réduire significativement le taux de réponses 
+toxiques. 
 
-\section{Contexte}
-Décrivez le contexte universitaire, professionnel ou scientifique du rapport.
 
-\section{Problématique}
-Présentez la question principale à laquelle votre travail tente de répondre.
+\chapter{Reinforcement Learning from Human Feedback (RLHF) [1] [2]}
+L'apprentissage par renforcement à partir de rétroactions humaines (RLHF) est une technique utilisée 
+pour intégrer des informations issues d'êtres humains dans les systèmes d'intelligence artificielle. 
 
-\section{Objectifs}
+Le processus fondamental du RLHF comprend trois étapes. Premièrement, il est nécessaire d'entraîner 
+un modèle de langage capable de répondre aux questions des utilisateurs. Deuxièmement, il faut 
+recueillir des données sur les préférences humaines afin d'entraîner un modèle de récompense qui 
+reflète ces préférences. Finalement, le modèle de langage peut être optimisé à l'aide d'un algorithme 
+d'apprentissage par renforcement. Cela ce fait en générant des réponses qui sont ensuite évaluées 
+par le modèle de récompense. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{img/RLHF.jpg}
+    \caption{Une représentation du processus RLHF initial en trois étapes, comprenant le SFT, 
+            un modèle de récompense, puis une phase d'optimisation.}
+    \label{fig:RLHF}
+\end{figure}
+
+
+
+\section{Entraîner un modèle de langage}
+
+Le Supervised Fine-Tuning (SFT) consiste à prendre un modèle de langage de base pré-entraîné 
+et à l'ajuster sur un jeu de données soigneusement sélectionné. Il est composé de paires 
+instruction-réponse de haute qualité. Cet ensemble de données SFT contient généralement des 
+milliers, voire des dizaines de milliers d'exemples illustrant le comportement attendu.
+On y retrouve des réponses claires aux questions, des interventions utiles face à des requêtes 
+ainsi que des refus appropriés lorsqu'il s'agit de demandes potentiellement dangereuses.
+
+Le SFT transforme le modèle de base initialement conçu pour prédire le jeton suivant. Ce système qui 
+est capable de suivre des instructions et de générer des réponses structurées. Toutefois, le SFT 
+présente des limites. Le modèle assimile la forme que doivent prendre des réponses pertinentes. 
+Il n'est pas toujours en mesure de produire systématiquement un contenu de haute qualité. De plus, il 
+peut avoir de la difficulté à généraliser ses capacités au-delà des exemples spécifiques présents 
+dans l'ensemble de données SFT.
+
+\section{Entraînement d'un modèle de récompense}
+
+La formation du modèle de récompense consiste à créer un modèle capable de prédire les préférences 
+humaines. Des annotateurs humains se voient présenter un prompt ainsi que plusieurs réponses générées 
+par un modèle. Par la suite, ils doivent indiquer laquelle est la meilleure. Ces étiquettes de 
+comparaison servent à entraîner un modèle de récompense. Généralement le modèle de langage doté d'une 
+sortie scalaire qui attribue un score numérique à chaque prompt qui donne une réponse. On peut ainsi 
+prédire quelle réponse serait préférable pour un humain.
+ 
+On utilise généralement entre des milliers et des centaines de milliers d'étiquettes de comparaison. 
+Une fois le modèle de récompense entraîné, le système dispose donc d'un modèle de langage capable de 
+générer des réponses et d'un modèle qui estime leur préférence. Le score de récompense peut alors 
+servir à optimiser le modèle de langage à l'étape suivante du processus RLHF.
+
+
+\section{Optimisation par apprentissage par renforcement}
+
+Le modèle de récompense attribue un score à ces réponses et l'algorithme Proximal Policy Optimization (PPO) 
+ajuste les poids du modèle de politique afin d'accroître la récompense attendue. Un élément crucial 
+est la pénalité liée à la divergence, qui empêche le modèle de politique de trop s'éloigner 
+du modèle SFT initial. 
+
+Cette pénalité est souvent fondée sur la divergence de Kullback-Leibler. Elle est calculée à partir 
+des distributions de probabilité des jetons. Cette pénalité permet de maintenir le modèle dans un 
+cadre de génération linguistique cohérent et permet l'orientation des résultats qui maximisent la 
+récompense.
+
+Enfin, le processus peut être répété.Cette approche est parfois appelée RLHF en ligne itératif. 
+Elle nécessite toutefois un dispositif permettant de recueillir régulièrement des retours humains 
+sur les réponses produites.
+
+
+\chapter{Direct Preference Optimization (DPO) [3] [4]}
+
+L'innovation fondamentale de DPO réside dans son approche d'optimisation directe. Plutôt que 
+d'entraîner un modèle de récompense distinct, DPO utilise une fonction de perte de type entropie 
+croisée binaire pour mettre à jour directement les poids du modèle à partir de données de préférence. 
+Ce processus simplifié rend l'entraînement plus stable et plus efficace, tout en permettant d'obtenir 
+des résultats comparables, voire supérieurs, à ceux de la méthode traditionnelle RLHF.
+
+La fonction de perte de DPO
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{img/DPO.jpg}
+    \caption{La fonction de perte de DPO qui optimise directement la politique du le modèle de langage 
+            tout en utilisant des données de préférence}
+    \label{fig:DPO}
+\end{figure}
+
+De plus, DPO réduit la consommation de mémoire VRAM lors de l'entraînement et accélère les temps de 
+convergence. 
+
+Le DPO réduit ainsi significativement les obstacles à l'entraînement de modèles basés sur les 
+préférences humaines. Par ailleurs, DPO ne nécessite pratiquement aucun réglage d'hyperparamètres.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{img/pytorch.jpg}
+    \caption{Le code PyTorch correspondant à la fonction de perte DPO}
+    \label{fig:pytorch}
+\end{figure}
+
+\chapter{SAE [5]}
 Les objectifs de ce rapport sont les suivants :
 
 \begin{itemize}
-    \item présenter le contexte du projet ;
-    \item expliquer la méthodologie utilisée ;
-    \item analyser les résultats obtenus ;
-    \item proposer des perspectives d'amélioration.
+    \item méthode de pointe pour l'entraînement d'auto-encodeurs parcimonieux.
+    \item on souligne des lois d'échelle bien définies et on étend l'approche à un grand nombre de variables latentes.
+    \item métriques permettant d’évaluer la qualité des variables latentes et constatons que, selon ces métriques, les auto-encodeurs parcimonieux de plus grande taille sont généralement plus performants.
 \end{itemize}
 
-\section{Organisation du rapport}
-Ce rapport est organisé en plusieurs chapitres. Le premier chapitre présente le contexte, le deuxième décrit la méthodologie et le troisième analyse les résultats.
 
-\chapter{État de l'art}
 
-\section{Présentation générale}
-Présentez les concepts et les travaux existants liés à votre sujet.
 
-\section{Travaux connexes}
-Discutez des recherches, méthodes ou solutions déjà proposées.
 
-\section{Synthèse}
-Comparez les différentes approches et expliquez le choix retenu.
+\chapter{Red Teaming Language Models with Language Models [6]}
 
-\chapter{Méthodologie}
 
-\section{Matériel et outils}
-Présentez les logiciels, outils, équipements ou données utilisés.
 
-\begin{table}[H]
-    \centering
-    \caption{Outils utilisés}
-    \begin{tabular}{lll}
-        \toprule
-        Outil & Version & Utilisation \\
-        \midrule
-        LaTeX & 2025 & Rédaction du rapport \\
-        Python & 3.x & Analyse des données \\
-        Git & 2.x & Gestion du projet \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\section{Méthode de travail}
-Expliquez les différentes étapes suivies pour réaliser le travail.
-
-\section{Architecture ou processus}
-Insérez ici un schéma, une architecture ou un diagramme.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{img/schema.png}
-    \caption{Schéma général du projet}
-    \label{fig:schema}
-\end{figure}
-
-La figure~\ref{fig:schema} présente l'organisation générale du projet.
-
-\chapter{Réalisation}
-
-\section{Développement}
-Décrivez les étapes de réalisation du projet.
-
-\section{Implémentation}
-Vous pouvez insérer du code ou des équations.
-
-Exemple d'équation :
-
-\begin{equation}
-    E = mc^2
-    \label{eq:energie}
-\end{equation}
-
-\section{Difficultés rencontrées}
-Présentez les problèmes rencontrés ainsi que les solutions adoptées.
-
-\chapter{Résultats et discussion}
-
-\section{Résultats obtenus}
-Présentez et analysez vos résultats.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{img/resultats.png}
-    \caption{Résultats obtenus}
-    \label{fig:resultats}
-\end{figure}
-
-\section{Interprétation}
-Expliquez la signification des résultats et comparez-les avec les objectifs initiaux.
-
-\section{Limites du travail}
-Présentez les limites de votre étude ou de votre projet.
-
-\chapter{Conclusion et perspectives}
-
-Ce rapport a permis de présenter le contexte, la méthodologie et les résultats du travail réalisé.
-
-Les principaux résultats montrent que les objectifs fixés ont été atteints. Cependant, certaines améliorations restent possibles, notamment :
-
-\begin{itemize}
-    \item améliorer la précision des résultats ;
-    \item tester la solution sur un ensemble de données plus important ;
-    \item ajouter de nouvelles fonctionnalités ;
-    \item optimiser les performances.
-\end{itemize}
 
 % -------------------------
 % Bibliographie
 % -------------------------
-% \begin{thebibliography}{9}
+\begin{thebibliography}{9}
 
-% \bibitem{latex}
-% Leslie Lamport,
-% \textit{LaTeX: A Document Preparation System},
-% Addison-Wesley, 1994.
+\bibitem{site}
+Nathan Lambert,
+\textit{Reinforcement Learning from Human Feedback},
+\url{https://arxiv.org/abs/2504.12501},
+consulté le 9 novembre 2026.
 
-% \bibitem{article}
-% Nom de l'auteur,
-% ``Titre de l'article'',
-% \textit{Nom de la revue}, volume, numéro, année.
+\bibitem{site}
+Hugging Face,
+\textit{Illustrating Reinforcement Learning from Human Feedback (RLHF) },
+\url{https://huggingface.co/blog/rlhf},
+consulté le 9 novembre 2026.
 
-% \bibitem{site}
-% Nom de l'auteur ou de l'organisation,
-% \textit{Titre de la page web},
-% \url{https://www.exemple.com},
-% consulté le 18 septembre 2026.
+\bibitem{site}
+Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D. et Finn, C.,
+\textit{Direct Preference Optimization: Your Language Model is Secretly a Reward Model},
+\url{https://arxiv.org/abs/2305.18290},
+consulté le 10 novembre 2026.
 
-% \end{thebibliography}
+\bibitem{site}
+Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D. et Finn, C.,
+\textit{Direct Preference Optimization: Your Language Model is Secretly a Reward Model},
+\url{https://huggingface.co/learn/smol-course/unit2/2},
+consulté le 10 novembre 2026.
+
+\bibitem{site}
+Gao, L., la Tour, T. D., Tillman, H., Goh, G., Troll, R., Radford, A. et al.,
+\textit{Direct Preference Optimization: Your Language Model is Secretly a Reward Model},
+\url{https://arxiv.org/abs/2406.04093},
+consulté le 10 novembre 2026.
+
+\bibitem{site}
+Perez, E., Huang, S., Song, F., Cai, T., Ring, R., Aslanides, J. et al.,
+\textit{Red Teaming Language Models with Language Models},
+\url{https://arxiv.org/abs/2202.03286},
+consulté le 10 novembre 2026.
+
+\end{thebibliography}
 
 % -------------------------
 % Annexes
