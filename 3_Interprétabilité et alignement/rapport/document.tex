@@ -219,22 +219,128 @@ préférences humaines. Par ailleurs, DPO ne nécessite pratiquement aucun régl
     \label{fig:pytorch}
 \end{figure}
 
-\chapter{SAE [5]}
-Les objectifs de ce rapport sont les suivants :
+\chapter{Scaling and evaluating sparse autoencoders (SAE) [5]}
+
+\section{Préparation des auto-encoders}
+Pour la préparation, on cible une couche située vers la fin du réseau. Dans laquelle elle est censée 
+contenir de nombreuses caractéristiques sans pour autant être spécialisée dans la prédiction du jeton 
+suivant. Après l'entraînement, on observe l'erreur quadratique moyenne (MSE) de reconstruction afin 
+d'évaluer les données de l'auto-encodeur.
+
+On entraîne un auto-encodeur pour reconstruire le vecteur d'entrée à partir de représentations 
+latentes. La perte combine l'erreur de reconstruction et une pénalité qui encourage des activations 
+peu nombreuses.
+
+\section{Activation TopK}
+L'activation TopK ne conserve que les k activations latentes les plus fortes et met les autres à zéro. 
+Le décodeur reste inchangé, et l'entraînement minimise uniquement l'erreur de reconstruction.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\textwidth]{img/TopK.jpg}
+    \caption{TopK conserve les k activations les plus grandes et met les autres à zéro.}
+    \label{fig:TopK}
+\end{figure}
 
 \begin{itemize}
-    \item méthode de pointe pour l'entraînement d'auto-encodeurs parcimonieux.
-    \item on souligne des lois d'échelle bien définies et on étend l'approche à un grand nombre de variables latentes.
-    \item métriques permettant d’évaluer la qualité des variables latentes et constatons que, selon ces métriques, les auto-encodeurs parcimonieux de plus grande taille sont généralement plus performants.
+    \item Supprime la pénalité \(L_1\), qui approxime imparfaitement \(L_0\).
+    \item Permet de fixer directement le nombre d'activations non nulles (\(L_0\)), sans régler le coefficient \(\lambda\).
+    \item Facilite la comparaison des modèles et les expérimentations rapides.
+    \item Améliore la monosemanticité des exemples activant en mettant à zéro les petites activations.
 \end{itemize}
 
 
+Preventing dead latents
+\section{Prévention des variables latentes}
+Pour limiter les variables latentes, c'est-à-dire celles qui ne s'activent plus pendant l'entraînement. 
+Cela rend l'entraînement inefficace sur le plan computationnel. 
+    
+
+\begin{itemize}
+    \item Initialiser l'encodeur avec la transposée des poids du décodeur.
+    \item Ajouter une perte auxiliaire qui utilise les TopK variables latentes mortes pour réduire l'erreur de reconstruction.
+\end{itemize}
+
+Sans correction, jusqu'à 90 \% des variables latentes peuvent devenir inactives. Avec ces techniques, 
+ce taux tombe à 7 \% dans le plus grand auto-encodeur testé, qui compte 16 millions de variables 
+latentes.
+
+\section{Loi de mise à l'échelle}
+
+Entraînement jusqu'à la frontière calcul-MSE L(C) cherche à obtenir la meilleure MSE possible pour un budget de calcul donné, 
+sans attendre la convergence. On observe une relation de loi de puissance entre la 
+MSE et les ressources de calcul, sauf pour les plus petits modèles.
+
+L'entraînement jusqu'à convergence L(N) entraîne les auto-encodeurs jusqu'à convergence afin d'estimer la meilleure 
+reconstruction atteignable, sans tenir compte du coût de calcul. Le taux d'apprentissage maximal 
+convergent diminue comme 
+\[
+\text{}
+\frac{1}{\sqrt{n}}.
+\]
 
 
+On observe également que le taux d'apprentissage optimal pour L(N) est environ quatre fois inférieur 
+à celui pour L(C). Nous observons que le nombre de jetons nécessaires à la convergence augmente 
+approximativement comme \[
+\Theta\!\left(n^{0.6}\right)
+\]
 
 \chapter{Red Teaming Language Models with Language Models [6]}
 
+Les modèles de langage (ML) sont souvent impossibles à déployer en raison de leur potentiel à nuire 
+aux utilisateurs de manière difficilement prévisible. On peut automatiser et générer des cas de test 
+"red teaming" à l'aide d'un autre ML.
 
+\begin{enumerate}
+    \item Générer des cas de test \(x\) à l'aide du modèle de red teaming \(p_r(x)\).
+    \item Pour chaque cas \(x\), obtenir une réponse \(y\) du modèle cible \(p_t(y \mid x)\).
+    \item Évaluer chaque paire \((x,y)\) avec le classificateur de red teaming \(r(x,y)\), afin de repérer les sorties préjudiciables.
+\end{enumerate}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{img/RedTeam.jpg}
+    \caption{Cas de test du processus de red teaming.}
+    \label{fig:RedTeam}
+\end{figure}
+
+\newpage
+Voici quelques comportements problématiques avant son déploiement. l'analyse des résultats permettent 
+de mieux comprendre les risques et d'orienter les améliorations du modèle.
+\begin{itemize}
+    \item la génération de propos offensants ou haineux
+    \item la divulgation de données personnelles
+    \item la reproduction d'informations issues des données d'entraînement
+    \item la présence de biais dans la manière dont le modèle parle de différents groupes
+\end{itemize}
+
+\section{Red Teaming pour le langage offensant}
+
+Les 500 000 cas de test générés  suscitent des réponses offensantes dans 3,7 \% des cas, soit 18 444 
+échecs. La méthode SFS s'appuie sur ces cas de test pour augmenter la fréquence des réponses 
+offensantes, tout en maintenant une diversité comparable des tests. La méthode obtient une proportion 
+similaire de réponses offensantes, mais avec une diversité moindre.
+
+\section{Red Teaming pour la fuite de données}
+Les tests indiquent que le LLM a divulgué des éléments de son corpus d'entraînement dans 1709 cas. 
+Certaines réponses reproduisent des extraits uniques ou les présentent comme des citations, 
+ce qui peut faciliter la recherche de leur source et l'inférence qu'un document faisait partie 
+des données d'entraînement. D'autres reproduisent du contenu sans le signaler, pouvant relever de 
+l'usurpation ou du plagiat. En somme, le modèle présente un risque de fuite de données exploitable et 
+potentiellement préjudiciable.
+
+\section{Red Teaming pour la fuite coordonnées personnelles}
+Les tests montrent que les modèles peuvent mémoriser puis divulguer des données personnelles 
+présentes dans leurs données d'entraînement, comme de vrais numéros de téléphone ou de sécurité 
+sociale. Les tests d'intrusion servent à repérer ces fuites, notamment en vérifiant si le modèle 
+génère aussi des adresses postales ou électroniques.
+
+\section{Red Teaming pour la désinformation}
+D'autres tests parle pas de tous les groupes avec le même respect. Il favorise certains groupes 
+minoritaires et tient parfois des propos offensants sur des groupes majoritaires ou bien vise versa. 
+Le modèle peut également générer des informations fausses ou trompeuses sur des sujets.
 
 
 % -------------------------
