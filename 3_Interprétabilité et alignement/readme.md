@@ -28,3 +28,8 @@ docker run -d --name my-jupyter --restart unless-stopped --gpus all -p 8888:8888
 
 docker logs my-jupyter
 
+
+
+docker network create ai-net
+docker network connect ai-net ollama_GPU
+docker network connect ai-net my-jupyter-1050
