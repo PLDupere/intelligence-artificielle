@@ -155,13 +155,13 @@ calibration.
 
 
 % -----------------------------------------------------
-\chapter{Élagage (pruning) [2]}
+\chapter{Élagage [2]}
 L'élagage est le processus consistant à éliminer les poids, neurones ou couches inutiles d'un 
 réseau de neurones afin d'obtenir un modèle plus compact, plus rapide et plus efficace. 
 
 L'identification des redondances :  
 La suppression de composants :  
-Le réglage fin (fine-tuning) : 
+Le réglage d'ajustement des paramètres : 
 
 \begin{itemize}
     \item \textbf{L'identification des redondances : } repérer les paramètres qui contribuent peu aux résultats du modèle.
@@ -169,10 +169,10 @@ Le réglage fin (fine-tuning) :
     \item \textbf{Le réglage des paramètres : } ré-entraîner le modèle élagué pour restaurer les performances perdues.
 \end{itemize}
 
-SparseGPT procède en ramenant le problème de l'élagage (ne seule étape) à un ensemble d'instances de régression 
+SparseGPT procède en ramenant le problème de l'élagage à un ensemble d'instances de régression 
 creuse à très grande échelle. Il résout ensuite ces instances grâce à un nouvel algorithme de 
-résolution approchée pour la régression creuse, suffisamment efficace pour s'exécuter en quelques 
-heures sur les plus grands modèles GPT accessibles au public (175 milliards de paramètres) à l'aide 
+résolution approchée pour la régression. Il est suffisamment efficace pour s'exécuter en quelques 
+heures sur les plus grands modèles GPT ayant 175 milliards de paramètres à l'aide 
 d'un seul GPU
 
 \begin{figure}[H]
@@ -213,8 +213,8 @@ générée par le modèle volumineux avec une température élevée dans sa fonc
 
 La distillation des connaissances repose sur deux modèles :
 \begin{itemize}
-    \item \textbf{Le modèle enseignant (teacher) : } est un modèle volumineux et performant, préalablement entraîné.
-    \item \textbf{Le modèle distillé (student) : } est un modèle plus petit, entraîné pour reproduire les prédictions du modèle enseignant.
+    \item \textbf{Le modèle enseignant : } est un modèle volumineux et performant, préalablement entraîné.
+    \item \textbf{Le modèle distillé : } est un modèle plus petit, entraîné pour reproduire les prédictions du modèle enseignant.
 \end{itemize}
 
 La température agit en fonction de la formule ci-dessous:
@@ -240,7 +240,7 @@ Le problème de cette formulation est qu'elle tend à produire des distributions
 Une classe domine largement et toutes les autres reçoivent des probabilités proches de zéro. L'information 
 sur les similarités entre classes est ainsi perdue. Cela peut entraîner le sur apprentissage.
 
-Dans cet article , les effets de la combinaison de modèles acoustiques basés sur des réseaux de neurones profonds (DNN) 
+Dans cet article , les effets de la combinaison de modèles acoustiques basés sur des réseaux de neurones profonds 
 utilisés pour la reconnaissance automatique de la parole. La stratégie de distillation proposée permet 
 de condenser un ensemble de modèles en un seul modèle. 
 
@@ -248,7 +248,7 @@ de condenser un ensemble de modèles en un seul modèle.
 % -----------------------------------------------------
 \chapter{LoRA/QLoRA [4]}
 
-LoRA (Low-rank Adapters) : Le réglage fin par adaptateurs de rang faible (LoRA) est une méthode 
+LoRA (Low-rank Adapters) : Le réglage fin par adaptateurs de rang faible est une méthode 
 qui réduit les besoins en mémoire en utilisant un petit ensemble de paramètres entraînables sans mettre 
 à jour l'intégralité des paramètres du modèle. LoRA decompose la mise a jour en deux matrices de rang réduit, 
 ce qui augmente l'efficacité de LoRA en termes de mémoire et de vitesse.
@@ -274,8 +274,8 @@ ne nécessitant que 24 heures d'ajustement fin sur un seul GPU.
     \item \textbf{Optimiseurs paginés :} pour gérer les pics de consommation mémoire et evite tout dépassent. On exploitent la fonctionnalité « Unified Memory 3 » de NVIDIA, qui assure des transferts automatiques de pages entre le CPU et le GPU. Cela permet un traitement GPU sans erreur même lorsque la mémoire du GPU vient à manquer ponctuellement.
 \end{itemize}
 
-QLORA utilise un type de données de stockage à faible précision (généralement 4 bits) 
-et un type de données de calcul (généralement BFloat16). En pratique, cela signifie que chaque fois 
+QLORA utilise un type de données de stockage à faible précision généralement sur 4 bits
+et un type de données de calcul en BFloat16. En pratique, cela signifie que chaque fois 
 qu'un tenseur de poids QLORA est utilisé.Le tenseur est déquantifié en BFloat16, puis une 
 multiplication matricielle est effectuée en 16 bits.
 
@@ -370,8 +370,7 @@ multiplication matricielle est effectuée en 16 bits.
 \end{table}
 
 
-Pour ce TP2, j'ai choisi d'essayer comme techniques de compression de modèles, la quantification et l'élagage 
-(pruning). Je crois que c'est possible d'optimiser et de compresseur un petit model disponible.
+Pour ce TP2, j'ai choisi d'essayer comme techniques de compression de modèles, la quantification et l'élagage. Je crois que c'est possible d'optimiser et de compresseur un petit model disponible.
 
 La quantification est effectuée au chargement du modèle avec BitsAndBytesConfig et la bibliothèque bitsandbytes. 
 Pour étudier l'élagage, j'applique un élagage non structuré L1 aux poids des couches linéaires avec la librairie pytorch.
