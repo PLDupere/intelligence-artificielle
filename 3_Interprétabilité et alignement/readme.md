@@ -1,18 +1,18 @@
 ## Prérequis
 
-- python 3.13.15
+- docker
+- python
 - numpy
 - pandas
 - matplotlib
-- scipy
-- Scikit-Learn 
 - sparsify
 - torch
 - transformers 
 - datasets 
 - accelerate
 - eai-sparsify
-- trl 
+- trl
+- trackio
 
 ## Installation de Ollama
 docker run -d --gpus all -v ollama:/root/.ollama -p 11434:11434 --name ollama_GPU ollama/ollama
@@ -33,7 +33,7 @@ docker network connect ai-net ollama_GPU
 docker network connect ai-net my-jupyter-1050
 
 # References
-- 
+- https://huggingface.co/docs/trl/dpo_trainer
 - https://walkinglabs.github.io/hands-on-modern-rl/en/chapter17_dpo/metrics
 - https://huggingface.co/learn/cookbook/en/llm_judge
 - https://catalog.ngc.nvidia.com/orgs/nvidia/-/containers/pytorch/-?_lr=1
