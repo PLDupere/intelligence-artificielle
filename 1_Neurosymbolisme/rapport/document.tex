@@ -117,7 +117,7 @@ sont parfois critiqués pour leur manque de fiabilité. Même s'ils apprennent d
 faits à partir des données utilisées pour leur entraînement. Ils peuvent les oublier, 
 les déformer ou inventer des informations. Ce phénomène est appelé « hallucination ».
 
-les grands modèles de langage (LLM) ont montré de grandes capacités dans de nombreuses 
+les grands modèles de langage ont montré de grandes capacités dans de nombreuses 
 tâches de traitement automatique du langage naturel la plupart d'entre eux utilisent 
 l'architecture Transformer, composée de :
 \begin{itemize}
@@ -134,10 +134,10 @@ Ce triplet est composé de l'entité de tête, la relation et l'entité de queue
 Les graphes de connaissances existants peuvent être classés en quatre groupes selon le type d'informations 
 qu'ils contiennent :
 \begin{itemize}
-    \item Les KG encyclopédiques
-    \item Les KG de sens commun
-    \item Les KG spécifiques à un domaine
-    \item Les KG multimodaux
+    \item Les graphes de connaissances encyclopédiques
+    \item Les graphes de connaissances de sens commun
+    \item Les graphes de connaissances spécifiques à un domaine
+    \item Les graphes de connaissances multimodaux
 \end{itemize}
 
 Les graphes de connaissances permettent un raisonnement symbolique et produisent des résultats 
@@ -145,45 +145,43 @@ plus faciles à comprendre. L'association des LLM et des graphes de connaissance
 plus en plus les chercheurs, car ces deux technologies peuvent se compléter et s'améliorer 
 mutuellement.
 
-Dans cet article, trois méthodes sont proposées pour intégrer les graphes de connaissances 
-dans les LLM : l'enrichissement des LLM par les graphes de connaissances, l'amélioration des 
+Dans cet article, des méthodes sont proposées pour intégrer les graphes de connaissances 
+dans les LLM soit: l'enrichissement des LLM par les graphes de connaissances et l'amélioration des 
 graphes de connaissances grâce aux LLM.
 
 % ----------------------------------------------
-\section{Formation des LLM avec des Graphe de connaissances}
-Les grands modèles de langage (LLM) sont généralement entraînés de manière non supervisée sur 
+\section{Formation des LLM avec des graphes de connaissances}
+Les grands modèles de langage sont généralement entraînés de manière non supervisée sur 
 de vastes corpus. Malgré leurs bonnes performance. Ils peuvent manquer de connaissances 
 pratiques et actualisées sur le monde réel.
 
-Les graphes de connaissances (KG) peuvent être intégrés aux LLM de trois principales façons :
+Les graphes de connaissances peuvent être intégrés aux LLM de trois principales façons :
 \begin{itemize}
     \item En les intégrant à l'objectif d'entraînement
-    \item En ajoutant les connaissances des KG aux entrées du modèle
-    \item En utilisant les KG lors de l'instruction-tuning
+    \item En ajoutant les connaissances des graphes de connaissances aux entrées du modèle
+    \item En utilisant les graphes de connaissances lors de l'instruction-tuning
 \end{itemize}
 
-Il existe une problématique leur mise à jour nécessite d'un nouvel entraînement du modèle. 
-Ces approches risquent donc de mal gérer des connaissances nouvelles ou absentes des données 
-d'entraînement.
-
 Les LLM sont souvent critiqués pour leur  difficulté à comprendre leur fonctionnement interne 
-et leurs décisions. Les KG représentent les connaissances de manière structurée et explicite, 
+et leurs décisions. Les graphes de connaissances représentent les connaissances de manière structurée et explicite, 
 ce qui peut rendre les raisonnements du modèle plus faciles à expliquer.
 
 % ----------------------------------------------
 \section{Les Graphes de connaissances augmentés par des LLM}
 
+Il exite plusieurs façons d'utiliser les LLM pour améliorer les graphes de connaissances comme :
+
 \begin{itemize}
-    \item \textbf{Embeddings de KG augmentés par LLM :} L'objectif est de convertir les entités et relations en vecteurs mathématiques.
-    \item \textbf{Complétion de KG augmentée par LLM :} On utilise des pipelines de LLM pour prédire les descriptions d'entités et identifier l'élément manquant dans un triplet.
-    \item \textbf{Construction de KG augmentée par LLM :} Les LLM automatisent la création de graphes via la découverte d'entités, la résolution de coréférences et l'extraction de relations.
-    \item \textbf{Génération de texte à partir de KG :} Ce processus transforme des données structurées en texte naturel en exploitant les connaissances intrinsèques des LLM.
-    \item \textbf{Questions-Réponses sur KG :} Les LLM permettent de répondre à des questions naturelles entre le langage utilisateur et les faits structurés du graphe.
+    \item \textbf{Embeddings de graphes de connaissances augmentés par LLM :} L'objectif est de convertir les entités et relations en vecteurs mathématiques.
+    \item \textbf{Complétion de graphes de connaissances augmentée par LLM :} On utilise des pipelines de LLM pour prédire les descriptions d'entités et identifier l'élément manquant dans un triplet.
+    \item \textbf{Construction de graphes de connaissances augmentée par LLM :} Les LLM automatisent la création de graphes via la découverte d'entités, la résolution de coréférences et l'extraction de relations.
+    \item \textbf{Génération de texte à partir de graphes de connaissances :} Ce processus transforme des données structurées en texte naturel en exploitant les connaissances intrinsèques des LLM.
+    \item \textbf{Questions-Réponses sur graphes de connaissances :} Les LLM permettent de répondre à des questions naturelles entre le langage utilisateur et les faits structurés du graphe.
 \end{itemize}
 
 
 % ----------------------------------------------
-\section{La synergie entre LLM et KG}
+\section{La synergie entre LLM et graphes de connaissances}
 Cette section présente la synergie entre les grands modèles de langage et les graphes de 
 connaissances. Les LLM permettent de comprendre le langage naturel, tandis que les graphes 
 fournissent des connaissances structurées et factuelles. Leur combinaison peut donc améliorer 
@@ -225,7 +223,7 @@ recherche encore en développement.
 \section{Critiques et limites}
 C'est une excellente synthèse critique. L'article contient plus de 250 citations qui sont pour 
 la plus par ressente. De plus, il est intéressant de constater que deux approches sont possibles 
-pour combiner les LLM et les graphes de connaissances (KG), afin d'obtenir des résultats plus 
+pour combiner les LLM et les graphes de connaissances, afin d'obtenir des résultats plus 
 précis et plus fiables. Ces deux approches sont complémentaires et peuvent permettre de compenser 
 leurs limites respectives.
 
@@ -294,7 +292,7 @@ mieux comprendre la structure globale et le contenu du corpus. Ils peuvent égal
 explorer les données sans requête précise. C'est en GraphRAG que ces résumés de communauté qui sont composés
 d'éléments (noeuds, arêtes et affirmations associées)
 
-\textbf{Résumés par communauté → Réponses communautaires → Réponse globale}
+\textbf{Résumés par communauté => Réponses communautaires => Réponse globale}
 Les résumés des communautés sont d'abord répartis en plusieurs groupes. Le LLM produit ensuite une réponse 
 pour chaque groupe et lui attribue un score d'utilité. Les réponses les plus pertinentes sont conservées. 
 Puis, elles sont combinées et optimisées pour générer une réponse globale à la question de l'utilisateur.
